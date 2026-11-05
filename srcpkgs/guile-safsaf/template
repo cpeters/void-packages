@@ -1,0 +1,26 @@
+# Template file for 'guile-safsaf'
+pkgname=guile-safsaf
+version=0.5
+revision=1
+build_style=gnu-configure
+wrksrc=safsaf
+hostmakedepends="autoconf automake pkg-config guile-devel
+ guile-fibers guile-knots guile-webutils guile-json
+ guile-lib guile-gcrypt"
+makedepends="guile-devel"
+depends="guile guile-fibers guile-knots guile-webutils
+ guile-json guile-lib guile-gcrypt"
+short_desc="Web framework for GNU Guile using Fibers and Knots"
+maintainer="Local Maintainer <local@localhost>"
+license="LGPL-3.0-or-later"
+homepage="https://forge.cbaines.net/cbaines/safsaf"
+distfiles="https://forge.cbaines.net/cbaines/safsaf/archive/v${version}.tar.gz>safsaf-${version}.tar.gz"
+checksum=921ecd9eb6c67d71c27baa19a834aa984ef79a034eaff7fe0a5c715ef0644224
+
+pre_configure() {
+    # API documentation requires guile-documenta.
+    # Skip the documentation subdirectory.
+    sed -i 's/^SUBDIRS = doc$/SUBDIRS =/' Makefile.am
+
+    ./bootstrap.sh
+}

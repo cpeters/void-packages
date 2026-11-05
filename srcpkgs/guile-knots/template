@@ -1,0 +1,23 @@
+# Template file for 'guile-knots'
+pkgname=guile-knots
+version=0.1.39
+revision=1
+_gitrev=3417d2599f5ff7e305e9d938a88a11d9fb09db6f
+wrksrc="guile-knots"
+build_style=gnu-configure
+hostmakedepends="autoconf automake pkg-config guile-devel guile-fibers guile-lib"
+makedepends="guile-devel"
+depends="guile guile-fibers guile-lib"
+short_desc="Concurrency utilities and HTTP server for Guile Fibers"
+maintainer="Local Maintainer <local@localhost>"
+license="GPL-3.0-or-later"
+homepage="https://forge.cbaines.net/cbaines/guile-knots"
+distfiles="https://forge.cbaines.net/cbaines/guile-knots/archive/${_gitrev}.tar.gz"
+checksum=92193dee6d3c66e1fb0ba965802fada7a4b4a9f592b852c11ff421c28c1e9798
+
+pre_configure() {
+	if [ ! -x configure ]; then
+		./bootstrap
+	fi
+}
+

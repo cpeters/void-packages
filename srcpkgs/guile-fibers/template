@@ -1,0 +1,20 @@
+# Template file for 'guile-fibers'
+pkgname=guile-fibers
+version=2.0.0
+revision=1
+build_style=gnu-configure
+wrksrc=fibers
+hostmakedepends="autoconf automake libtool pkg-config guile-devel texinfo gettext-devel"
+makedepends="guile-devel"
+depends="guile"
+short_desc="Lightweight concurrency facility for GNU Guile"
+maintainer="Local Maintainer <local@localhost>"
+license="LGPL-3.0-or-later"
+homepage="https://codeberg.org/guile/fibers"
+distfiles="https://codeberg.org/guile/fibers/archive/v${version}.tar.gz>fibers-${version}.tar.gz"
+checksum=5cf63d8afbafe94b51fc94ccaf24f1643438dabfdd8f5fa83ff89cb0b2650b13
+
+pre_configure() {
+	NOCONFIGURE=1 ./autogen.sh
+}
+

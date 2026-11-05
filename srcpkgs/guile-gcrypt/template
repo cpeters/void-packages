@@ -1,0 +1,19 @@
+# Template file for 'guile-gcrypt'
+pkgname=guile-gcrypt
+version=0.5.0
+revision=1
+build_style=gnu-configure
+hostmakedepends="autoconf automake pkg-config guile-devel texinfo"
+makedepends="guile-devel libgcrypt-devel"
+depends="guile libgcrypt"
+short_desc="Libgcrypt cryptographic bindings for GNU Guile"
+maintainer="Local Maintainer <local@localhost>"
+license="LGPL-3.0-or-later"
+homepage="https://codeberg.org/guile-gcrypt/guile-gcrypt"
+distfiles="https://deb.debian.org/debian/pool/main/g/guile-gcrypt/guile-gcrypt_${version}.orig.tar.gz"
+checksum=59fafedf6bc23dce32d26400c957a4d7cd32be1fbb26d0c6992aa71777284fe3
+
+pre_configure() {
+	./bootstrap.sh
+}
+

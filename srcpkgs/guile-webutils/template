@@ -1,0 +1,21 @@
+# Template file for 'guile-webutils'
+pkgname=guile-webutils
+version=0.1.1
+revision=1
+_commit=d309d65a85247e4f3cea63a17defd1e6d35d821f
+build_style=gnu-configure
+hostmakedepends="autoconf automake pkg-config texinfo
+ guile-devel guile-irregex guile-gcrypt"
+makedepends="guile-devel"
+depends="guile guile-irregex guile-gcrypt"
+short_desc="Web application authoring utilities for GNU Guile"
+maintainer="Local Maintainer <local@localhost>"
+license="GPL-3.0-or-later"
+homepage="https://notabug.org/cwebber/guile-webutils"
+distfiles="https://notabug.org/cwebber/guile-webutils/archive/${_commit}.tar.gz>guile-webutils-${version}.tar.gz"
+checksum=e428a5f2ba2dcf881639101ce4a991cf47aabe86921273ef3d20b6d95b1ef684
+
+pre_configure() {
+	autoreconf -fi
+}
+

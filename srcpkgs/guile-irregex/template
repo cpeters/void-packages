@@ -1,0 +1,17 @@
+# Template file for 'guile-irregex'
+# REQUIRED: run 'xgensum -f -i guile-irregex' to calculate source checksum.
+pkgname=guile-irregex
+version=0.9.12
+revision=1
+short_desc="Portable regular expressions for GNU Guile"
+maintainer="Local Maintainer <local@localhost>"
+license="MIT"
+homepage="https://www.synthcode.com/scheme/irregex/"
+distfiles="https://github.com/ashinn/irregex/archive/refs/tags/${version}.tar.gz>irregex-${version}.tar.gz"
+checksum=10b3399367aab31053c2f6b7d0e11e079f1fc5af9b829b09885d2ef7cdb6b524
+
+do_install() {
+	vinstall irregex-guile.scm 644 usr/share/guile/site/3.0/rx irregex.scm
+	vinstall irregex.scm 644 usr/share/guile/site/3.0/rx/source
+	vinstall irregex-utils.scm 644 usr/share/guile/site/3.0/rx/source
+}
