@@ -1,0 +1,32 @@
+--- a/Libraries/LibWeb/Editing/Commands.cpp
++++ b/Libraries/LibWeb/Editing/Commands.cpp
+@@ -80,12 +80,12 @@
+ {
+     // If queryCommandState("bold") returns true, set the selection's value to "normal".
+     if (MUST(document.query_command_state(CommandNames::bold))) {
+-        set_the_selections_value(document, CommandNames::bold, "normal"sv);
++        set_the_selections_value(document, CommandNames::bold, Utf16View("normal"sv));
+     }
+ 
+     // Otherwise set the selection's value to "bold".
+     else {
+-        set_the_selections_value(document, CommandNames::bold, "bold"sv);
++        set_the_selections_value(document, CommandNames::bold, Utf16View("bold"sv));
+     }
+ 
+     // Either way, return true.
+@@ -2639,12 +2639,12 @@
+ {
+     // If queryCommandState("italic") returns true, set the selection's value to "normal".
+     if (MUST(document.query_command_state(CommandNames::italic))) {
+-        set_the_selections_value(document, CommandNames::italic, "normal"sv);
++        set_the_selections_value(document, CommandNames::italic, Utf16View("normal"sv));
+     }
+ 
+     // Otherwise set the selection's value to "italic".
+     else {
+-        set_the_selections_value(document, CommandNames::italic, "italic"sv);
++        set_the_selections_value(document, CommandNames::italic, Utf16View("italic"sv));
+     }
+ 
+     // Either way, return true.

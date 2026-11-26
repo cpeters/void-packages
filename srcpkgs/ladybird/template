@@ -1,0 +1,188 @@
+# Template file for 'ladybird'
+pkgname=ladybird
+version=2026.47.8
+revision=2
+archs="x86_64"
+build_style=cmake
+hostmakedepends="
+ autoconf
+ autoconf-archive
+ automake
+ cargo
+ cmake
+ curl
+ git
+ glslang
+ libtool
+ mold
+ nasm
+ ninja
+ patchelf
+ pkg-config
+ python3
+ rust
+ tar
+ unzip
+ wayland-devel
+ zip
+"
+makedepends="
+ at-spi2-core-devel
+ glib-devel
+ libX11-devel
+ libXext-devel
+ libXrender-devel
+ libdrm-devel
+ libxcb-devel
+ libxkbcommon-devel
+ linux-headers
+ MesaLib-devel
+ ncurses-devel
+ pulseaudio-devel
+ Vulkan-Headers
+ vulkan-loader-devel
+ xcb-util-devel
+ xcb-util-cursor-devel
+ xcb-util-image-devel
+ xcb-util-keysyms-devel
+ xcb-util-renderutil-devel
+ xcb-util-wm-devel
+"
+short_desc="Independent web browser"
+maintainer="Orphaned <orphan@voidlinux.org>"
+license="BSD-2-Clause"
+homepage="https://ladybird.org/"
+distfiles="https://download.ladybird.org/linux/${version}/ladybird-${version}-source.tar.xz"
+checksum=e47d6d441f680dba4af3434253185bc3dd840eaf91c4ff6f0138a938ca15f95a
+
+# Prevent private bundled libraries from being advertised
+# as system shared library providers.
+noshlibprovides=yes
+
+# Bundled Qt version, independent of Void's system Qt.
+_qtversion=6.11.3
+
+# Exclude bundled Qt libraries and plugins from system
+# Qt private API dependency detection.
+skiprdeps="
+ /opt/ladybird/lib64/libQt6Core.so.${_qtversion}
+ /opt/ladybird/lib64/libQt6DBus.so.${_qtversion}
+ /opt/ladybird/lib64/libQt6Gui.so.${_qtversion}
+ /opt/ladybird/lib64/libQt6Network.so.${_qtversion}
+ /opt/ladybird/lib64/libQt6OpenGL.so.${_qtversion}
+ /opt/ladybird/lib64/libQt6Positioning.so.${_qtversion}
+ /opt/ladybird/lib64/libQt6SerialPort.so.${_qtversion}
+ /opt/ladybird/lib64/libQt6Svg.so.${_qtversion}
+ /opt/ladybird/lib64/libQt6WaylandClient.so.${_qtversion}
+ /opt/ladybird/lib64/libQt6Widgets.so.${_qtversion}
+ /opt/ladybird/lib64/libQt6XcbQpa.so.${_qtversion}
+ /opt/ladybird/Qt6/plugins/iconengines/libqsvgicon.so
+ /opt/ladybird/Qt6/plugins/imageformats/libqgif.so
+ /opt/ladybird/Qt6/plugins/imageformats/libqico.so
+ /opt/ladybird/Qt6/plugins/imageformats/libqjpeg.so
+ /opt/ladybird/Qt6/plugins/imageformats/libqsvg.so
+ /opt/ladybird/Qt6/plugins/platforminputcontexts/libcomposeplatforminputcontextplugin.so
+ /opt/ladybird/Qt6/plugins/platforminputcontexts/libibusplatforminputcontextplugin.so
+ /opt/ladybird/Qt6/plugins/platforms/libqoffscreen.so
+ /opt/ladybird/Qt6/plugins/platforms/libqwayland.so
+ /opt/ladybird/Qt6/plugins/platforms/libqxcb.so
+ /opt/ladybird/Qt6/plugins/platformthemes/libqxdgdesktopportal.so
+ /opt/ladybird/Qt6/plugins/position/libqtposition_geoclue2.so
+ /opt/ladybird/Qt6/plugins/position/libqtposition_nmea.so
+ /opt/ladybird/Qt6/plugins/wayland-decoration-client/libbradient.so
+ /opt/ladybird/Qt6/plugins/wayland-graphics-integration-client/libqt-plugin-wayland-egl.so
+ /opt/ladybird/Qt6/plugins/wayland-shell-integration/libxdg-shell.so
+ /opt/ladybird/Qt6/plugins/xcbglintegrations/libqxcb-egl-integration.so
+ /opt/ladybird/Qt6/plugins/xcbglintegrations/libqxcb-glx-integration.so
+"
+
+# Restore system library requirements from ELF objects
+# excluded from automatic dependency scanning.
+shlib_requires="
+ ld-linux-x86-64.so.2
+ libc.so.6
+ libEGL.so.1
+ libgcc_s.so.1
+ libGLX.so.0
+ libm.so.6
+ libOpenGL.so.0
+ libstdc++.so.6
+ libwayland-client.so.0
+ libwayland-cursor.so.0
+ libwayland-egl.so.1
+ libX11.so.6
+ libX11-xcb.so.1
+ libxcb.so.1
+ libxcb-cursor.so.0
+ libxcb-glx.so.0
+ libxcb-icccm.so.4
+ libxcb-image.so.0
+ libxcb-keysyms.so.1
+ libxcb-randr.so.0
+ libxcb-render.so.0
+ libxcb-render-util.so.0
+ libxcb-shape.so.0
+ libxcb-shm.so.0
+ libxcb-sync.so.1
+ libxcb-util.so.1
+ libxcb-xfixes.so.0
+ libxcb-xinput.so.0
+ libxcb-xkb.so.1
+ libxkbcommon.so.0
+ libxkbcommon-x11.so.0
+"
+
+do_configure() {
+	export VCPKG_ROOT="${wrksrc}/Build/vcpkg-distribution"
+	export VCPKG_MAX_CONCURRENCY="${XBPS_MAKEJOBS}"
+
+	# Bootstrap upstream's pinned vcpkg environment.
+	python3 Meta/ladybird.py vcpkg --preset Distribution
+
+	# Use upstream's distribution configuration with private
+	# bundled dependencies and a baseline CPU target.
+	cmake --preset Distribution \
+		-DCMAKE_INSTALL_PREFIX=/opt/ladybird \
+		-DLADYBIRD_BUILD_QT=ON \
+		-DLADYBIRD_VERSION="${version}" \
+		-DENABLE_INSTALL_HEADERS=OFF \
+		-DLADYBIRD_ENABLE_UPDATE_CHECK=OFF \
+		-DLADYBIRD_GENERATE_SYMBOL_FILES=OFF \
+		-DCMAKE_LINKER_TYPE=MOLD
+}
+
+do_build() {
+	cmake --build --preset Distribution \
+		--parallel "${XBPS_MAKEJOBS}"
+}
+
+do_install() {
+	DESTDIR="${DESTDIR}" cmake --install Build/distribution
+
+	# Remove static libraries not required at runtime.
+	rm -f "${DESTDIR}/opt/ladybird/lib64/"*.a
+
+	# Install the command-line launcher.
+	vbin "${FILESDIR}/ladybird"
+
+	# Update upstream desktop integration to use the launcher.
+	sed -i 's|^Exec=Ladybird|Exec=/usr/bin/ladybird|' \
+		"${DESTDIR}/opt/ladybird/share/applications/org.ladybird.Ladybird.desktop" \
+		"${DESTDIR}/opt/ladybird/share/dbus-1/services/org.ladybird.Ladybird.service"
+
+	# Install desktop integration into standard system paths.
+	vinstall "${DESTDIR}/opt/ladybird/share/applications/org.ladybird.Ladybird.desktop" \
+		644 usr/share/applications
+
+	vinstall "${DESTDIR}/opt/ladybird/share/dbus-1/services/org.ladybird.Ladybird.service" \
+		644 usr/share/dbus-1/services
+
+	vinstall "${DESTDIR}/opt/ladybird/share/icons/hicolor/scalable/apps/org.ladybird.Ladybird.svg" \
+		644 usr/share/icons/hicolor/scalable/apps
+
+	vinstall "${DESTDIR}/opt/ladybird/share/metainfo/org.ladybird.Ladybird.metainfo.xml" \
+		644 usr/share/metainfo
+
+	# Install the upstream license.
+	vlicense LICENSE
+}

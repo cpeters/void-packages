@@ -1,0 +1,11 @@
+--- a/Meta/CMake/install_vcpkg_libraries.cmake
++++ b/Meta/CMake/install_vcpkg_libraries.cmake
+@@ -35,7 +35,7 @@
+         PRE_EXCLUDE_REGEXES ${system_library_regexes}
+         POST_INCLUDE_FILES ${vcpkg_shared_libraries}
+         POST_EXCLUDE_REGEXES ".*"
+-        DIRECTORIES "${vcpkg_library_dir}"
++        DIRECTORIES "${vcpkg_library_dir}" "/usr/lib" "/lib" "/lib64"
+         LIBRARY DESTINATION ${ARG_DESTINATION} COMPONENT ${ARG_COMPONENT}
+     )
+ 
